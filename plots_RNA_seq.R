@@ -38,6 +38,7 @@ devtools::install_github("yanlinlin82/ggvenn")
 library(ggvenn)
 #Load data
 datadir <- "/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/results/DESeq2_results/tsv_files/"
+datadir <- "/Users/llorenzi/CEBPa/results/DESeq2_results/tsv_files/"
 list.files(datadir)#check content of datadir
 comparisons <- c("p30vsEV","p42vsEV") 
 #read results files into a list
@@ -72,7 +73,9 @@ cbPalette <- c("#999999",
                "#CC79A7") #source http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 
 #set as working directory the main directory where we want to save the plots
-wdir <- "~/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/results/"
+#wdir <- "~/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/results/"
+dir.create("~/tmpdir2")
+wdir <- "~/tmpdir2"
 setwd(wdir)
 #I create a directory for venn diagrams and move to that directory
 dir.create("venn_diagrams")
@@ -127,19 +130,20 @@ names(attributes(v.up)[["intersections"]])
 table(attributes(v.up)$intersections$p30vsEV%in%attributes(v.down)$intersections$p42vsEV)
 table(attributes(v.down)$intersections$p30vsEV%in%attributes(v.up)$intersections$p42vsEV)
 #some genes are upregulated in p30 and downregulated in p42 and vice versa
-
+v.up <- attributes(v.up)$intersections
+v.down <- attributes(v.down)$intersections
 #define groups:
-up_in_both <- attributes(v.up)$intersections$`p30vsEV:p42vsEV`
-down_in_both <- attributes(v.down)$intersections$`p30vsEV:p42vsEV`
-up_in_p30 <- attributes(v.up)$intersections$p30vsEV
-up_in_p30_down_in_p42 <- up_in_p30[up_in_p30%in%(attributes(v.down)$intersections$p42vsEV)]
+up_in_both <- v.up$`p30vsEV:p42vsEV`
+down_in_both <- v.down$`p30vsEV:p42vsEV`
+up_in_p30 <- v.up$p30vsEV
+up_in_p30_down_in_p42 <- up_in_p30[up_in_p30%in%v.down$p42vsEV]
 up_in_p30 <- up_in_p30[!(up_in_p30%in%up_in_p30_down_in_p42)]
-up_in_p42 <- attributes(v.up)$intersections$p42vsEV
-up_in_p42_down_in_p30 <- up_in_p42[up_in_p42%in%attributes(v.down)$intersections$p30vsEV]
+up_in_p42 <- v.up$p42vsEV
+up_in_p42_down_in_p30 <- up_in_p42[up_in_p42%in%v.down$p30vsEV]
 up_in_p42 <- up_in_p42[!(up_in_p42%in%up_in_p42_down_in_p30)]
-down_in_p30 <- attributes(v.down)$intersections$p30vsEV
+down_in_p30 <- v.down$p30vsEV
 down_in_p30 <- down_in_p30[!(down_in_p30%in%up_in_p42_down_in_p30)]
-down_in_p42 <- attributes(v.down)$intersections$p42vsEV
+down_in_p42 <- v.down$p42vsEV
 down_in_p42 <- down_in_p42[!(down_in_p42%in%up_in_p30_down_in_p42)]
 
 #aggregate gene names in a vector 
@@ -153,12 +157,16 @@ length(unique(c(unlist(list.up),unlist(list.down)))) #check that
 #that total number matches the original number of unique genes within both lists
 
 #read expression table
-tpm <- read.csv("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/data/expression_files/all_samples_gencodevM27.htseq_counts.gene_name.TPM.csv")
+#tpm <- read.csv("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/data/expression_files/all_samples_gencodevM27.htseq_counts.gene_name.TPM.csv")
+tpm <- read.csv("/Users/llorenzi/CEBPa/data/expression_files/all_samples_gencodevM27.htseq_counts.gene_name.TPM.csv")
 #remove LPS samples for now
 tpm <- tpm[,grep("LPS",colnames(tpm),invert = T)]
 #select genes
 table(genes%in%tpm$gene_name)
+#dos maneras alternativas de retener los genes de interes:
 tpm <- tpm%>%filter(gene_name%in%genes)
+tpm <- tpm[tpm$gene_name%in%genes,]
+
 #add group
 gl <- list(up_in_both=up_in_both,
            down_in_both=down_in_both,
@@ -168,24 +176,31 @@ gl <- list(up_in_both=up_in_both,
            up_in_p30=up_in_p30,
            up_in_p42_down_in_p30=up_in_p42_down_in_p30,
            up_in_p42=up_in_p42)
-sapply(tpm$gene_name,function(x)lapply(gl,function(y)return(x%in%y)))
 tmp <- sapply(gl,function(x)tpm$gene_name%in%x)
 group <- apply(tmp,1,function(x)colnames(tmp)[x])
-tpm$group <- group
-tpm$group_index <- seq_along(names(gl))[match(tpm$group,names(gl))]
+tpm$group <- unlist(group)
+tpm$group_index <- match(tpm$group,names(gl))
 #tpm <- tpm[order(tpm$group_index),]
 
 tpm$mean_exp <- apply(tpm[,2:10],1,mean)
-sorted_tpm <- tpm %>% group_by(group) %>% arrange( -mean_exp, .by_group = T)
-sorted_tpm_correct_group_order <- sorted_tpm %>%arrange(group_index)
+#sorted_tpm <- tpm %>% group_by(group) %>% arrange( -mean_exp, .by_group = T)
+#sorted_tpm_correct_group_order <- sorted_tpm %>%arrange(group_index)
+sorted_tpm_correct_group_order <- tpm %>% group_by(group_index) %>% arrange( -mean_exp, .by_group = T)
+
 getwd()
-setwd("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/results/")
+#setwd("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/results/")
+wdir
+setwd(wdir)
 dir.create("heatmaps")
 setwd("heatmaps/")
 
 rowsidecolors <- cbPalette[1:(length(levels(as.factor(sorted_tpm_correct_group_order$group))))][sorted_tpm_correct_group_order$group_index]
 pdf("test.pdf")
-heatmap3(sorted_tpm_correct_group_order[,2:10],Rowv = NA,Colv = NA,labRow = sorted_tpm_correct_group_order$gene_name,RowSideColors = rowsidecolors,
+heatmap3(sorted_tpm_correct_group_order[,2:10],
+         Rowv = NA,
+         Colv = NA,
+         labRow = sorted_tpm_correct_group_order$gene_name,
+         RowSideColors = rowsidecolors,
          legendfun=function() showLegend(legend=unique(sorted_tpm_correct_group_order$group),
                                          col=unique(rowsidecolors),cex=1.3),cexCol = 1.5,RowSideLabs = "Group")
 dev.off()
