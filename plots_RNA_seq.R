@@ -181,7 +181,11 @@ group <- apply(tmp,1,function(x)colnames(tmp)[x])
 tpm$group <- unlist(group)
 tpm$group_index <- match(tpm$group,names(gl))
 #tpm <- tpm[order(tpm$group_index),]
-
+#alternative way:
+# tpm$group <- NA
+# for (x in names(gl)) {
+#   tpm$group[tpm$gene_name%in%gl[[x]]] <- x
+# }
 tpm$mean_exp <- apply(tpm[,2:10],1,mean)
 #sorted_tpm <- tpm %>% group_by(group) %>% arrange( -mean_exp, .by_group = T)
 #sorted_tpm_correct_group_order <- sorted_tpm %>%arrange(group_index)
