@@ -33,38 +33,7 @@ require(data.table)
 library(ggpubr)
 setwd("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CBPa/RNA-seq/GSEA_results/Comparisons_TCGA")
 setwd("~/CEBPa/results/GSEA_results/Comparisons_TCGA/")
-## ---------------------------
-#geneset <- "Hallmarks"
-#geneset <- "c2"
-#geneset <- "c3"
-#geneset <- "c7"
-# custom_name_abbreviation <- function(str,
-#                                      flength=15,
-#                                      split="_",
-#                                      minlen=3,
-#                                      maxterms=4){
-#   x <- strsplit(str,split = split)[[1]]
-#   
-#   tmp=1
-#   while(length(x)>4){
-#     if(!all(nchar(x)<minlen)& any(nchar(x)<minlen))x <- x[-which(nchar(x)<minlen)[1]]
-#     else  if((tmp %% 2) != 0) {
-#       x <- x[-length(x)]
-#       tmp <- tmp +1}else x <- x[-1]
-#       
-#   }
-#   l <- length(x)
-#   minlelement <- floor(flength/l)
-#   lengths <- rep(minlelement,l)
-#   resto <- flength - minlelement*l
-#   if(resto!=0)  lengths[1:resto] <- lengths[1:resto] +1
-#   
-#   paste(sapply(seq_along(x), 
-#                function(z)abbreviate(x[z],strict = T,minlength = lengths[z])),collapse = ".")
-# }
-#test <- sapply(as.character(data_all$NAME),custom_name_abbreviation)
-#define function that I will use to plot
-#plot function
+
 pltf <- function(da,tit="",colby="significant",showcor=T,meth="pearson"){
   g <- ggplot(da,aes(x=`HPC-7`,y=TCGA)) +
     geom_point(aes_string(color=colby))+
@@ -78,8 +47,6 @@ pltf <- function(da,tit="",colby="significant",showcor=T,meth="pearson"){
 
 
 ####Preset parameters:
-
-wd <- "~/CEBPa/results/GSEA_results/Comparisons_TCGA/"
 
 ##RUN 1
 wd <- "~/CEBPa/results/GSEA_results/Comparisons_TCGA/"
