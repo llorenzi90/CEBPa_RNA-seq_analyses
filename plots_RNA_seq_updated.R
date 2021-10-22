@@ -78,30 +78,42 @@ wdir <- "~/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/results/"
 #wdir <- "~/tmpdir2"
 setwd(wdir)
 #I create a directory for venn diagrams and move to that directory
-dir.create("venn_diagrams")
+#dir.create("venn_diagrams")
 setwd("venn_diagrams/")
+dir.create("20210707")
+setwd("20210707/")
 
-pdf("upgenes.pdf")
-ggvenn(
-  list.up, 
-  fill_color = cbPalette[1:2], #change this to set other colors 
-  #fill_color = c( "#EFC000FF", "#868686FF"),
-  stroke_size = 0.5, set_name_size = 4,
-) + ggtitle("Upregulated genes")
-dev.off()
+for (si in c(6,7,8,9,10)) {
+  pdf(paste0("upgenes_text_size_",si,".pdf"))
+  g <- ggvenn(
+    list.up, 
+    fill_color = cbPalette[1:2], #change this to set other colors 
+    #fill_color = c( "#EFC000FF", "#868686FF"),
+    stroke_size = 0.5, set_name_size = si,
+    show_percentage = F,
+    text_size = si
+  ) + ggtitle("Upregulated genes") + theme(plot.title =  element_text(size=si*2.5))
+  print(g)
+  dev.off()
+  
+  pdf(paste0("downgenes_text_size_",si,".pdf"))
+  g <- ggvenn(
+    list.down, 
+    fill_color = cbPalette[1:2], #change this to set other colors 
+    #fill_color = c( "#EFC000FF", "#868686FF"),
+    stroke_size = 0.5, set_name_size = si,
+    show_percentage = F,
+    text_size = si
+  ) + ggtitle("Downregulated genes") +theme(plot.title =  element_text(size=si*2.5))
+  print(g)
+  dev.off()
+}
 
-pdf("downgenes.pdf")
-ggvenn(
-  list.down, 
-  fill_color = cbPalette[1:2], #change this to set other colors 
-  #fill_color = c( "#EFC000FF", "#868686FF"),
-  stroke_size = 0.5, set_name_size = 4,
-) + ggtitle("Downregulated genes")
-dev.off()
+
 
 
 ####      Heat maps     ####
-install.packages("heatmap3")
+#install.packages("heatmap3")
 library(heatmap3) #Sergi suggested to use this package, as it gives nice plots and has a good color palette
 
 #groups of genes
@@ -120,7 +132,7 @@ v.up <- venn(list.up,show.plot = F) #this function also makes a venn diagram (bu
 v.down <- venn(list.down,show.plot = F)
 #
 class(v.up)
-"venn"
+#"venn"
 #this function generates an object of class venn. See more details by running ?venn
 #These objects have a list of attributes that we can check like this:
 names(attributes(v.up))
@@ -137,19 +149,19 @@ up_in_both <- v.up$`p30vsEV:p42vsEV`
 down_in_both <- v.down$`p30vsEV:p42vsEV`
 up_in_p30 <- v.up$p30vsEV
 up_in_p30_down_in_p42 <- up_in_p30[up_in_p30%in%v.down$p42vsEV]
-up_in_p30 <- up_in_p30[!(up_in_p30%in%up_in_p30_down_in_p42)]
+#up_in_p30 <- up_in_p30[!(up_in_p30%in%up_in_p30_down_in_p42)]
 up_in_p42 <- v.up$p42vsEV
 up_in_p42_down_in_p30 <- up_in_p42[up_in_p42%in%v.down$p30vsEV]
-up_in_p42 <- up_in_p42[!(up_in_p42%in%up_in_p42_down_in_p30)]
+#up_in_p42 <- up_in_p42[!(up_in_p42%in%up_in_p42_down_in_p30)]
 down_in_p30 <- v.down$p30vsEV
 down_in_p30 <- down_in_p30[!(down_in_p30%in%up_in_p42_down_in_p30)]
 down_in_p42 <- v.down$p42vsEV
 down_in_p42 <- down_in_p42[!(down_in_p42%in%up_in_p30_down_in_p42)]
 
-#aggregate gene names in a vector 
-genes <- c(up_in_both,down_in_both,up_in_p30,down_in_p30,
-           up_in_p42,down_in_p42,up_in_p30_down_in_p42,
-           up_in_p42_down_in_p30)
+#aggregate gene names in a vector in the desired order
+genes <- c(up_in_both,up_in_p30,up_in_p42,down_in_both,down_in_p30,
+           down_in_p42
+           )
 length(genes)#5689
 length(unique(genes))#5689
 length(unique(c(unlist(list.up),unlist(list.down)))) #check that 
@@ -165,40 +177,31 @@ tpm <- tpm[,grep("LPS",colnames(tpm),invert = T)]
 table(genes%in%tpm$gene_name)
 #dos maneras alternativas de retener los genes de interes:
 tpm <- tpm%>%filter(gene_name%in%genes)
-tpm <- tpm[tpm$gene_name%in%genes,]
+#tpm <- tpm[tpm$gene_name%in%genes,]
 
 #add group
 gl <- list(up_in_both=up_in_both,
-           down_in_both=down_in_both,
-           down_in_p42=down_in_p42,
-           down_in_p30=down_in_p30,
-           up_in_p30_down_in_p42=up_in_p30_down_in_p42,
            up_in_p30=up_in_p30,
-           up_in_p42_down_in_p30=up_in_p42_down_in_p30,
-           up_in_p42=up_in_p42)
+           up_in_p42=up_in_p42,
+           down_in_both=down_in_both,
+           down_in_p30=down_in_p30,
+           down_in_p42=down_in_p42
+           )
 tmp <- sapply(gl,function(x)tpm$gene_name%in%x)
 group <- apply(tmp,1,function(x)colnames(tmp)[x])
 tpm$group <- unlist(group)
-
+tpm$group_index <- match(tpm$group,names(gl))
+#tpm <- tpm[order(tpm$group_index),]
 #alternative way:
 # tpm$group <- NA
 # for (x in names(gl)) {
 #   tpm$group[tpm$gene_name%in%gl[[x]]] <- x
 # }
-
-tpm$group_index <- match(tpm$group,names(gl))
-
-
-
-#tpm <- tpm[order(tpm$group_index),]
-
 tpm$mean_exp <- apply(tpm[,2:10],1,mean)
 #sorted_tpm <- tpm %>% group_by(group) %>% arrange( -mean_exp, .by_group = T)
 #sorted_tpm_correct_group_order <- sorted_tpm %>%arrange(group_index)
-#sorted_tpm_correct_group_order <- tpm %>% group_by(group_index) %>% arrange( -mean_exp, .by_group = T)
-
-#more direct way (no need to group by index, sort by group index first, then by mean_exp):
-sorted_tpm_correct_group_order <- tpm %>% arrange( group_index,-mean_exp)
+sorted_tpm_correct_group_order <- tpm %>% group_by(group_index) %>% arrange( -mean_exp, .by_group = T)
+sorted_tpm_correct_group_order <- tpm %>% arrange(  -group_index, -mean_exp)
 
 getwd()
 #setwd("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/results/")
@@ -206,15 +209,18 @@ wdir
 setwd(wdir)
 dir.create("heatmaps")
 setwd("heatmaps/")
-
+dir.create("20210707")
+setwd("20210707/")
 rowsidecolors <- cbPalette[1:(length(levels(as.factor(sorted_tpm_correct_group_order$group))))][sorted_tpm_correct_group_order$group_index]
-pdf("test.pdf")
+pdf("heatmap_p30-p42.pdf")
 heatmap3(sorted_tpm_correct_group_order[,2:10],
          Rowv = NA,
          Colv = NA,
-         labRow = sorted_tpm_correct_group_order$gene_name,
+         labRow = NA,
          RowSideColors = rowsidecolors,
-         legendfun=function() showLegend(legend=unique(sorted_tpm_correct_group_order$group),
-                                         col=unique(rowsidecolors),cex=1.3),cexCol = 1.5,RowSideLabs = "Group")
+         RowSideLabs = "",
+         cexRow =6,
+         legendfun=function() showLegend(legend=rev(unique(sorted_tpm_correct_group_order$group)),
+                                         col=rev(unique(rowsidecolors)),cex=1.3),cexCol = 1.5)
 dev.off()
 
