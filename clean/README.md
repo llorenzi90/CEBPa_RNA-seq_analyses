@@ -1,7 +1,7 @@
 ## The role of CEBPa in the inflammatory response 
 HPC-7 cells (which do not endogenously express C/EBPa) were transfected with plasmids containing either the p42 isoform or the p30 isoform. P42 and p30 are bonded to ERT2 (estrogen receptor), so that it localises in the cytoplasm until its induction with tamoxifen (ligand), which will translocate to the nucleus and only then p42 and p30 will be able to function. This fusion was performed to avoid undesired differentiative effects derived from the presence of the p42 isoform in the nucleus. We have also observed that AML patients carrying this C/EBPa mutation have a reduced response to inflammation. LPS was added to study the effects that the introduction of p30 had on HPC-7 capacity to respond to an immune challenge on a transcriptional level. Previous RT-qPCR experiments have shown that after an acute activation (2h) the expression of some acute inflammatory response genes like Ccl5, Cxcl2 or Il12b was not induced as much as in the cells with the long isoform of C/EBPa p42.  
 
-## Samples:  
+## Samples  
 
 EV 
 
@@ -17,17 +17,20 @@ P42 + LPS
 
  
 
-## Analyses:  
+## Analyses  
 
- 
+### Data download 
 
 ### Run MS5 
+check with file md5.txt
 
 ### FASTQC 
+fastqc.sh
 
-Align to the mouse genome (mm39) 
+### Align to the mouse genome (mm39) 
+hisat2_build_mm39.sh  hisat2_mm39.sh 
 
-Read count 
+### Read count 
 
 Differential gene expression 
 
