@@ -30,9 +30,10 @@ fastqc.sh
 ### Align to the mouse genome (mm39) 
 hisat2_build_mm39.sh  hisat2_mm39.sh 
 
-### Read count 
+### Read count on GENCODE transcriptome vM27
+htseq_count.sh
 
-Differential gene expression 
+## Differential gene expression 
 
 P30 vs EV 
 
