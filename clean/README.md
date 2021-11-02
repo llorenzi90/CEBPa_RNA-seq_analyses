@@ -28,13 +28,17 @@ check with file md5.txt
 fastqc.sh
 
 ### Align to the mouse genome (mm39) 
-hisat2_build_mm39.sh  hisat2_mm39.sh 
+hisat2_build_mm39.sh, hisat2_mm39.sh 
 
-### Read count on GENCODE transcriptome vM27
-htseq_count.sh generate_count_matrix.R
+### Read counts on GENCODE transcriptome vM27
+htseq_count.sh, generate_count_matrix.R
+conversion of ENSEMBL ids to gene names: convert_ENSgene_id_to_gene_name.R
+normalization (FPKM and TPM): calculate_gene_length.R, generate_FPKM_and_TPM.R
 
-## Differential gene expression 
+### Differential gene expression (DESeq2) and GSEA
+Scripts to match ENSEMBL gene IDs and NCBI IDs in mouse gene sets RData files (source: https://bioinf.wehi.edu.au/MSigDB/) and to generate gmt files: create_geneID_conversion_table_for_GSEA.R, generate_gmt_files_from_RData_mouse_gene_sets.R
 
+#### DGEA Comparisons:
 P30 vs EV 
 
 P42 vs EV 
