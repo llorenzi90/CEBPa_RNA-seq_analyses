@@ -34,7 +34,7 @@ module load conda/current
 conda activate htseq
 
 #2) Run htseq-count
-htseq-count -n $PPN --stranded=reverse --mode intersection-nonempty --supplementary-alignments ignore $sample.namesorted.bam $gtf
+htseq-count -n $PPN --stranded=reverse --mode intersection-nonempty --supplementary-alignments ignore $sample.namesorted.bam $gtf > $sample.htseq_count.txt
 
 #submit: 
 #PPN=8 (or another value)
