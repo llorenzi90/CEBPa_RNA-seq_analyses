@@ -31,7 +31,7 @@ fastqc.sh
 hisat2_build_mm39.sh  hisat2_mm39.sh 
 
 ### Read count on GENCODE transcriptome vM27
-htseq_count.sh
+htseq_count.sh generate_count_matrix.R
 
 ## Differential gene expression 
 
