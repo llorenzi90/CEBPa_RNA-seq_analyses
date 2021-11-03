@@ -31,8 +31,8 @@ fastqc.sh
 hisat2_build_mm39.sh, hisat2_mm39.sh 
 
 ### Read counts on GENCODE transcriptome vM27
-htseq_count.sh, generate_count_matrix.R
-conversion of ENSEMBL ids to gene names: convert_ENSgene_id_to_gene_name.R
+htseq_count.sh, generate_count_matrix.R  
+conversion of ENSEMBL ids to gene names: convert_ENSgene_id_to_gene_name.R  
 normalization (FPKM and TPM): calculate_gene_length.R, generate_FPKM_and_TPM.R
 
 ### Differential gene expression (DESeq2) and GSEA
