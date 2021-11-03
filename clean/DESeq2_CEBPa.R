@@ -5,8 +5,7 @@ sink(paste0("DESeq2.log"))
 
 countdata=read.table("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/CEBPa/RNA-seq/data/expression_files/all_samples_gencodevM27.htseq_counts.gene_name.txt",header = T)
 
-#read conversion table for rank files
-#conversion_ENSMBL_NCBI <- read.csv("~/Nextcloud/CBPa_RNA_seq/htseq_count/conversion_table_ENSEMBL_NCBI_ids.csv")
+#read conversion table for rank files (mouse gene sets have NCBI ids)
 conversion_ENSMBL_NCBI <- read.csv("/home/llorenzi@CARRERASRESEARCH.ORG/share/Cuartero Group/CUARTERO GROUP/references/mouse/updated_conversion_table_ENSEMBL_NCBI_ids.csv")
 conversion_ENSMBL_NCBI <- conversion_ENSMBL_NCBI[!is.na(conversion_ENSMBL_NCBI$ncbi_GeneID),]
 
@@ -64,12 +63,12 @@ for(comp in names(comparison_list)){
   results_list[[comp]] <- res
   
   write.table(res,paste0(comp,"_DESeq_results.txt"),quote = F,sep = "\t")
-  # rank <- as.data.frame(res[order(res$stat,decreasing = T),])
-  # rank$gene <- rownames(rank)
-  # rank$gene[rank$gene%in%conversion_ENSMBL_NCBI$gene_name] <- 
-  #   conversion_ENSMBL_NCBI$ncbi_GeneID[match(rank$gene[rank$gene%in%conversion_ENSMBL_NCBI$gene_name],
-  #                                            conversion_ENSMBL_NCBI$gene_name)]
-  # write.table(rank[,c("gene","stat")],paste0("rank_files/",comp,"_DESeq2.rnk"),quote = F,col.names = F,row.names = F,sep = "\t")
+  rank <- as.data.frame(res[order(res$stat,decreasing = T),])
+  rank$gene <- rownames(rank)
+  rank$gene[rank$gene%in%conversion_ENSMBL_NCBI$gene_name] <- 
+    conversion_ENSMBL_NCBI$ncbi_GeneID[match(rank$gene[rank$gene%in%conversion_ENSMBL_NCBI$gene_name],
+                                             conversion_ENSMBL_NCBI$gene_name)]
+  write.table(rank[,c("gene","stat")],paste0("rank_files/",comp,"_DESeq2.rnk"),quote = F,col.names = F,row.names = F,sep = "\t")
 
 }
 
