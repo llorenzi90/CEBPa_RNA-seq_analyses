@@ -38,26 +38,15 @@ normalization (FPKM and TPM): calculate_gene_length.R, generate_FPKM_and_TPM.R
 ### Differential gene expression (DESeq2) and GSEA
 Scripts to match ENSEMBL gene IDs and NCBI IDs in mouse gene sets RData files (source: https://bioinf.wehi.edu.au/MSigDB/) and to generate gmt files: create_geneID_conversion_table_for_GSEA.R, generate_gmt_files_from_RData_mouse_gene_sets.R
 
-#### DGEA Comparisons:
-P30 vs EV 
+#### DGEA:  
+DESeq2_CEBPa.R
 
-P42 vs EV 
 
-P30 vs p42 
-
-P30_LPS vs EV_LPS 
-
-P42_LPS vs EV_LPS 
-
-P30_LPS vs P42_LPS 
-
-EV_LPS vs EV 
-
-P30_LPS vs P30 
-
-P42_LPS vs p42 
-
-GSEA: Hallmarks 
+#### GSEA:  
+##### Hallmarks:  
+generate_bash_run_gsea_Hallmarks.R, run_GseaPreranked_CEBPa_DESeq2.sh  
+##### C2, C3, C7:  
+generate_bash_run_gsea_c2_c3_c7.R, run_GseaPreranked_CEBPa_DESeq2_c2_c3_c7_gene_sets.sh
 
 PCA 
 
