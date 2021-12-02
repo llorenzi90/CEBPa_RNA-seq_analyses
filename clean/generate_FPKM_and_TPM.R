@@ -22,8 +22,8 @@ options(scipen = 999)
 
 ## load up the packages we will need:  (uncomment as required)
 
-require(tidyverse)
-require(data.table)
+#require(tidyverse)
+#require(data.table)
 
 ## ---------------------------
 
