@@ -82,6 +82,8 @@ p42LPS_vs_p42_groupdesign <- results(dds, contrast = c("group","p42TRUE","p42FAL
 summary(p42LPS_vs_p42_groupdesign)
 summary(p42LPS_vs_p42)
 #same result!!
+BiocManager::install("ExploreModelMatrix")
+library(ExploreModelMatrix)
 vd <- VisualizeDesign(sampleData = data.frame(group=dds$group), 
                       designFormula =  ~ group, 
                       textSizeFitted = 4)

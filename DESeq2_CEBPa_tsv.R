@@ -31,6 +31,10 @@ ddsMat <- DESeqDataSetFromMatrix(countData = countdata,
                                  colData = coldata,
                                  design = ~0+ vector + LPS + vector:LPS)
 
+# ddsMat <- DESeqDataSetFromMatrix(countData = countdata,
+#                                  colData = coldata,
+#                                  design = ~ 0+vector*LPS) #Is this equivalent?? check
+
 #filter non-informative rows
 #removing rows of the DESeqDataSet that have no counts, or only a single count across all samples. Additional weighting/filtering to improve power is applied at a later step in the workflow.
 nrow(ddsMat)
