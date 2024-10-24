@@ -19,11 +19,6 @@ P42 + LPS
 
 ## Analyses  
 
-### Data download 
-
-### Run MS5 
-check with file md5.txt
-
 ### FASTQC 
 fastqc.sh
 
@@ -48,9 +43,8 @@ generate_bash_run_gsea_Hallmarks.R, run_GseaPreranked_CEBPa_DESeq2.sh
 ##### C2, C3, C7:  
 generate_bash_run_gsea_c2_c3_c7.R, run_GseaPreranked_CEBPa_DESeq2_c2_c3_c7_gene_sets.sh
 
-PCA 
-
-Hierarchical clustering 
+#### PCA and Hierarchical clustering 
+PCA_and_heatmaps_sample_clustering.R
 
  
 
