@@ -47,35 +47,3 @@ generate_bash_run_gsea_c2_c3_c7.R, run_GseaPreranked_CEBPa_DESeq2_c2_c3_c7_gene_
 PCA_and_heatmaps_sample_clustering.R
 
  
-
- 
-
- 
-
-Other things:  
-
- 
-
-PCA of samples separated between LPS and non-LPS 
-
-Compare induction in different genotypes (LPS vs non LPS) 
-
-Venn diagram of induced genes by p30 and p42 
-
-Bar chart of expression levels before/after induction 
-
-Compare between genotypes 
-
-Plot fold-induction: heatmap, bar charts 
-
-Identify DE pathways before and after inflammation: GSEA, GO 
-
-Identify motif enrichment in DE gene promoters 
-
-Place DE genes into the Bhatt classification 
-
-Identify DE lncRNA (see S Carpenter’s talk on how important are they for inflammation) 
-
-Is there alternative splicing?  
-
-Is there alternative TSS usage? 
